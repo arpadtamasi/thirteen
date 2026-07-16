@@ -1,0 +1,75 @@
+# thirteen host configuration
+# Copy to ./thirteen.toml or ~/.config/thirteen/thirteen.toml and edit.
+
+[serial]
+port = "/dev/ttyACM0"   # Linux; macOS: "/dev/cu.usbmodem*"; Windows: "COM3"
+baud = 115200
+
+# ---------------------------------------------------------------------------
+# Colors per agent state. Modes: solid | pulse | blink | off.
+# These defaults are built in; override any state here.
+
+[colors.thinking]
+color = "#8A2BE2"
+mode = "pulse"
+
+[colors.running]
+color = "#00A0FF"
+mode = "pulse"
+
+[colors.waiting]
+color = "#FFB000"
+mode = "blink"
+
+[colors.done]
+color = "#00C853"
+mode = "solid"
+
+[colors.error]
+color = "#FF1744"
+mode = "blink"
+
+# ---------------------------------------------------------------------------
+# Adapters. Each gets a pool of keys whose LEDs show its agents' status.
+# Key indices: 0-4 top row, 5-9 middle row, 10-12 bottom row.
+
+[adapters.claude_code]
+keys = [0, 1, 2, 3, 4, 5]
+# events_file = "~/.local/state/thirteen/claude-events.jsonl"
+# done_timeout = 300
+
+[adapters.generic_stdin]
+keys = [6, 7, 8]
+
+[adapters.demo]
+enabled = false          # set true to test LEDs with no agent attached
+keys = [9, 10, 11, 12]
+# interval = 2.0
+
+# ---------------------------------------------------------------------------
+# Host-side bindings for device inputs. Remember: the pad is also a plain
+# HID keyboard (keys type F13-F24 by default), so simple keystroke macros
+# need no binding here at all — bind F13-F24 in your terminal or OS instead.
+#
+# Binding types:
+#   shell   — run a command:            { type = "shell", command = "..." }
+#   adapter — call an adapter action:   { type = "adapter", adapter = "claude_code", action = "clear" }
+#   led     — set an LED directly:      { type = "led", key = 12, color = "#FF00FF", mode = "solid" }
+
+[keys]
+# key 12 (bottom-right, mapped to "none" in the device keymap) clears
+# finished sessions:
+12 = { type = "adapter", adapter = "claude_code", action = "clear" }
+# example: pop up a terminal on key 11
+# 11 = { type = "shell", command = "x-terminal-emulator" }
+
+[enc]
+# encoder already does volume via HID; bind cw/ccw/btn here to override
+# cw  = { type = "shell", command = "..." }
+# ccw = { type = "shell", command = "..." }
+# btn = { type = "shell", command = "..." }
+
+[joy]
+# joystick directions: up | down | left | right | press
+# up    = { type = "shell", command = "..." }
+# press = { type = "shell", command = "..." }

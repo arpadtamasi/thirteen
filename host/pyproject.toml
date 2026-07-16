@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "thirteen-host"
+version = "0.1.0"
+description = "Host daemon for the thirteen agent macropad — serial bridge, LED state engine, agent adapters"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = [
+    "pyserial-asyncio>=0.6",
+]
+keywords = ["macropad", "agent", "serial", "hid", "claude-code"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Hardware",
+]
+
+[project.urls]
+Homepage = "https://github.com/arpadtamasi/thirteen"
+
+[project.scripts]
+thirteen-host = "thirteen_host.__main__:main"
+thirteen-hook = "thirteen_host.hook:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.23"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/thirteen_host"]

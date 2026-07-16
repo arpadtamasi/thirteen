@@ -1,0 +1,22 @@
+{
+  "keys": [
+    {"type": "key", "code": "F13"},
+    {"type": "key", "code": "F14"},
+    {"type": "key", "code": "F15"},
+    {"type": "key", "code": "F16"},
+    {"type": "key", "code": "F17"},
+    {"type": "key", "code": "F18"},
+    {"type": "key", "code": "F19"},
+    {"type": "key", "code": "F20"},
+    {"type": "key", "code": "F21"},
+    {"type": "key", "code": "F22"},
+    {"type": "key", "code": "F23"},
+    {"type": "key", "code": "F24"},
+    {"type": "none"}
+  ],
+  "enc": {
+    "cw": {"type": "key", "code": "VOL_UP"},
+    "ccw": {"type": "key", "code": "VOL_DOWN"},
+    "btn": {"type": "key", "code": "MUTE"}
+  }
+}
