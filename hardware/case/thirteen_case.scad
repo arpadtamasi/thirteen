@@ -1,6 +1,10 @@
 // thirteen — parametric case
 // Top plate with Kailh Choc v1 cutouts + bottom shell with USB-C opening.
 //
+// Layout: encoder knob top-left, joystick top-right, two keys between
+// them, then rows of 4 / 4 / 3 keys (13 keys total). An optional
+// translucent bottom rim acts as a diffuser for the 6 edge-glow LEDs.
+//
 // Render:  set `part` below (or via -D on the CLI), F6, export STL.
 // See README.md in this directory for exact commands.
 
@@ -16,8 +20,10 @@ key_pitch_x = 18.0;
 key_pitch_y = 17.0;
 // Choc plate cutout (MX: 14.0). 13.8 per Kailh spec.
 switch_cutout = 13.8;
-// keys per row, top to bottom (13 total)
-row_keys = [5, 5, 3];
+// width reserved for the knob / joystick corner cells in the top band
+corner_cell = 24.0;
+// height of the top band (knob + joystick + 2 keys)
+top_band = 28.0;
 
 /* [Encoder + joystick] */
 // EC11 shaft hole
@@ -51,24 +57,17 @@ eps = 0.01;
 
 // ---- derived dimensions -----------------------------------------------------
 
-max_cols = max(row_keys);
-rows = len(row_keys);
-// extra row of space at the bottom for encoder + joystick
-extra_row_h = 30;
+// top band: corner cell + 2 keys + corner cell
+plate_w = 2 * corner_cell + 2 * key_pitch_x + 2 * margin;
+plate_h = top_band + 3 * key_pitch_y + 2 * margin;
 
-block_w = max_cols * key_pitch_x;
-block_h = rows * key_pitch_y;
-plate_w = block_w + 2 * margin;
-plate_h = block_h + extra_row_h + 2 * margin;
+top_cy   = plate_h - margin - top_band / 2;   // knob / joystick / K0-K1 center
+rows_top = plate_h - margin - top_band;       // top edge of the 4/4/3 block
 
-// key block origin (top-left key center), measured from plate corner
-origin_x = margin + key_pitch_x / 2;
-origin_y = plate_h - margin - key_pitch_y / 2;
+enc_cx = margin + corner_cell / 2;            // knob, top-left
+joy_cx = plate_w - margin - corner_cell / 2;  // joystick, top-right
 
-// encoder / joystick centers in the extra bottom band
-enc_cx = margin + block_w * 0.22;
-joy_cx = margin + block_w * 0.72;
-ctrl_cy = margin + extra_row_h / 2;
+// rows below the top band: 4 keys, 4 keys, then 1u + 2u talk bar + 1u
 
 // screw bosses, inset from the four corners
 boss_inset = margin;
@@ -81,14 +80,25 @@ boss_pos = [
 
 // ---- key positions -----------------------------------------------------------
 
-function row_offset_x(r) = (max_cols - row_keys[r]) * key_pitch_x / 2;
+// key index -> [x, y] center. K0-K1 sit in the top band between knob and
+// joystick; K2-K12 fill the 4/4/3 rows below.
+function key_pos(i) =
+    i < 2 ? [margin + corner_cell + (i + 0.5) * key_pitch_x, top_cy]
+  : i < 10 ? let(j = i - 2,
+        r = j < 4 ? 0 : 1,
+        c = r == 0 ? j : j - 4,
+        x0 = (plate_w - 4 * key_pitch_x) / 2)
+    [x0 + (c + 0.5) * key_pitch_x,
+     rows_top - r * key_pitch_y - key_pitch_y / 2]
+    // bottom row: 1u, 2u talk bar, 1u (cells 18 / 36 / 18)
+  : let(x0 = (plate_w - 4 * key_pitch_x) / 2,
+        cx = i == 10 ? 0.5 * key_pitch_x
+           : i == 11 ? 2.0 * key_pitch_x
+           : 3.5 * key_pitch_x)
+    [x0 + cx, rows_top - 2 * key_pitch_y - key_pitch_y / 2];
 
 module at_each_key() {
-    for (r = [0 : rows - 1])
-        for (c = [0 : row_keys[r] - 1])
-            translate([origin_x + row_offset_x(r) + c * key_pitch_x,
-                       origin_y - r * key_pitch_y])
-                children();
+    for (i = [0 : 12]) translate(key_pos(i)) children();
 }
 
 // ---- plate --------------------------------------------------------------------
@@ -106,11 +116,11 @@ module plate() {
                 cube([switch_cutout, switch_cutout, plate_thickness + 2 * eps]);
 
         // encoder shaft
-        translate([enc_cx, ctrl_cy, -eps])
+        translate([enc_cx, top_cy, -eps])
             cylinder(d = enc_hole_d, h = plate_thickness + 2 * eps);
 
         // joystick opening
-        translate([joy_cx, ctrl_cy, -eps])
+        translate([joy_cx, top_cy, -eps])
             cylinder(d = joy_hole_d, h = plate_thickness + 2 * eps);
 
         // corner screw holes (countersunk from top)
@@ -161,35 +171,42 @@ module shell() {
 /* [Display options] */
 display_style = "black"; // ["black", "white"]
 show_icons = true;
+// edge-glow color shown in the preview (the daemon paints it with the
+// highest-priority agent state); "" = off
+edge_glow = "#FFB000";
 
 // per-key LED glow colors for the preview: the daemon's default state
-// palette. "" = LED off.
+// palette. "" = LED off. K0-K5 are the six agent keys.
 glow_colors = [
-    "#8A2BE2", "#8A2BE2", "#00A0FF", "#FFB000", "",   // top row
-    "#00C853", "#8A2BE2", "", "", "",                  // middle row
-    "", "", ""                                         // bottom row
+    "#8A2BE2", "#00A0FF",                       // K0-K1, top band
+    "#FFB000", "#00C853", "#8A2BE2", "",        // K2-K5, agent row
+    "", "", "", "",                             // K6-K9, command row
+    "", "", ""                                  // K10-K12, bottom row
 ];
 
 case_color = display_style == "white" ? [0.90, 0.90, 0.91] : [0.13, 0.13, 0.14];
 cap_color  = display_style == "white" ? [0.96, 0.96, 0.97] : [0.17, 0.17, 0.18];
 icon_color = display_style == "white" ? [0.30, 0.30, 0.34] : [0.80, 0.80, 0.84];
 
-// keycap legends, top row to bottom: session slots 1-5, then
-// approve / reject / run / pause / stop, then prev / next / clear
-icon_ids = ["d1", "d2", "d3", "d4", "d5",
-            "chk", "x", "play", "pause", "stop",
-            "left", "right", "ring"];
+// keycap legends: session dots 1-6 on the agent keys (top band + second
+// row), then approve / reject / run / pause, then prev / next / clear
+// bottom row: prev / push-to-talk bar / clear
+icon_ids = ["d1", "d2",
+            "d3", "d4", "d5", "d6",
+            "chk", "x", "play", "pause",
+            "left", "mic", "ring"];
 
 module rounded_sq(w, h, r) {
     offset(r = r) offset(r = -r) square([w, h], center = true);
 }
 
-// MBK-ish Choc keycap: 17.2x16.2 footprint tapering to a smaller top
-module keycap() {
+// MBK-ish Choc keycap; u = width in key units (2 = the talk bar)
+module keycap(u = 1) {
+    w = 16.9 + (u - 1) * 18;
     hull() {
-        linear_extrude(0.01) rounded_sq(16.9, 15.9, 2);
+        linear_extrude(0.01) rounded_sq(w, 15.9, 2);
         translate([0, 0, 3.2])
-            linear_extrude(0.01) rounded_sq(14.5, 13.5, 3);
+            linear_extrude(0.01) rounded_sq(w - 2.4, 13.5, 3);
     }
 }
 
@@ -227,7 +244,9 @@ module dots(n) {
       : n == 2 ? [[-1.8, 0], [1.8, 0]]
       : n == 3 ? [[-2.4, 0], [0, 0], [2.4, 0]]
       : n == 4 ? [[-1.8, -1.8], [1.8, -1.8], [-1.8, 1.8], [1.8, 1.8]]
-      :          [[-2, -2], [2, -2], [0, 0], [-2, 2], [2, 2]];
+      : n == 5 ? [[-2, -2], [2, -2], [0, 0], [-2, 2], [2, 2]]
+      :          [[-1.8, -2.2], [1.8, -2.2], [-1.8, 0], [1.8, 0],
+                  [-1.8, 2.2], [1.8, 2.2]];
     for (q = p) translate(q) circle(d = 1.7);
 }
 
@@ -237,6 +256,7 @@ module icon(id) {
     if (id == "d3") dots(3);
     if (id == "d4") dots(4);
     if (id == "d5") dots(5);
+    if (id == "d6") dots(6);
     if (id == "chk") {
         seg([-2.8, 0.2], [-0.9, -1.8], 1.5);
         seg([-0.9, -1.8], [2.9, 2.4], 1.5);
@@ -257,6 +277,22 @@ module icon(id) {
         circle(d = 6);
         circle(d = 3.2);
     }
+    if (id == "mic") scale(0.85) {
+        // body
+        hull() {
+            translate([0, 3.2]) circle(d = 3.2);
+            translate([0, 0.8]) circle(d = 3.2);
+        }
+        // holder: bottom half-ring wrapping under the body
+        difference() {
+            circle(d = 6.6);
+            circle(d = 4.8);
+            translate([0, 3.05]) square([8, 5.1], center = true);
+        }
+        // stem + base
+        seg([0, -3.3], [0, -4.4], 1.2);
+        seg([-1.8, -4.7], [1.8, -4.7], 1.2);
+    }
 }
 
 module display_assembly() {
@@ -265,26 +301,35 @@ module display_assembly() {
     color(case_color) shell();
     color(case_color) translate([0, 0, top_z]) plate();
 
-    // keycaps + LED glow, keyed to glow_colors by index
-    for (r = [0 : rows - 1])
-        for (c = [0 : row_keys[r] - 1]) {
-            i = (r == 0) ? c : (r == 1) ? 5 + c : 10 + c;
-            x = origin_x + row_offset_x(r) + c * key_pitch_x;
-            y = origin_y - r * key_pitch_y;
-            translate([x, y, top_z + plate_thickness + 1.8])
-                color(cap_color) keycap();
-            if (show_icons)
-                color(icon_color)
-                    translate([x, y, top_z + plate_thickness + 1.8 + 3.2])
-                        linear_extrude(0.4) icon(icon_ids[i]);
-            if (glow_colors[i] != "")
-                color(glow_colors[i], 0.9)
-                    translate([x, y, top_z + plate_thickness])
-                        linear_extrude(1.6) rounded_sq(18.6, 17.6, 2);
-        }
+    // edge-glow diffuser rim, lit by the 6 underglow LEDs
+    if (edge_glow != "")
+        color(edge_glow, 0.55)
+            translate([0, 0, -0.5])
+                linear_extrude(2.6)
+                    difference() {
+                        offset(r = 3.2) offset(r = -1.2) square([plate_w, plate_h]);
+                        offset(r = 2) offset(r = -2) square([plate_w, plate_h]);
+                    }
 
-    translate([enc_cx, ctrl_cy, top_z + plate_thickness]) knob();
-    translate([joy_cx, ctrl_cy, top_z + plate_thickness - 2]) stick();
+    // keycaps + legends + LED glow (K11 is the 2u talk bar)
+    for (i = [0 : 12]) {
+        p = key_pos(i);
+        u = i == 11 ? 2 : 1;
+        translate([p[0], p[1], top_z + plate_thickness + 1.8])
+            color(cap_color) keycap(u);
+        if (show_icons)
+            color(icon_color)
+                translate([p[0], p[1], top_z + plate_thickness + 1.8 + 3.2])
+                    linear_extrude(0.4) icon(icon_ids[i]);
+        if (glow_colors[i] != "")
+            color(glow_colors[i], 0.9)
+                translate([p[0], p[1], top_z + plate_thickness])
+                    linear_extrude(1.6)
+                        rounded_sq(18.6 + (u - 1) * 18, 17.6, 2);
+    }
+
+    translate([enc_cx, top_cy, top_z + plate_thickness]) knob();
+    translate([joy_cx, top_cy, top_z + plate_thickness - 2]) stick();
 
     // white USB-C cable stub out the top edge
     color([0.92, 0.92, 0.92])

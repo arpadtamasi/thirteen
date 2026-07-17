@@ -7,6 +7,11 @@
 #include <cstdint>
 
 constexpr uint8_t NUM_KEYS = 13;
+// SK6812 chain: one LED per key (0-12), then the edge-glow ring LEDs
+// around the case rim (13..). Edge LEDs are addressed via the protocol
+// as indexes 13-18, or -2 for the whole ring.
+constexpr uint8_t NUM_EDGE_LEDS = 6;
+constexpr uint8_t NUM_LEDS = NUM_KEYS + NUM_EDGE_LEDS;
 
 #ifdef SUPERMINI
 // ESP32-S3 SuperMini: fewer pins broken out. GPIO 33-37 are not available
@@ -15,9 +20,9 @@ constexpr uint8_t NUM_KEYS = 13;
 // pinout. TODO(hw-test): verify against your specific SuperMini clone —
 // pinouts vary between sellers.
 constexpr uint8_t KEY_PINS[NUM_KEYS] = {
-    1, 2, 3, 4, 5,        // top row (K0-K4)
-    6, 7, 8, 9, 10,       // middle row (K5-K9)
-    11, 12, 13            // bottom row (K10-K12)
+    1, 2, 3, 4, 5,        // K0-K1 top band, K2-K4 agent row
+    6, 7, 8, 9, 10,       // K5 agent row, K6-K9 command row
+    11, 12, 13            // K10-K12 bottom row (K11 = talk bar)
 };
 constexpr uint8_t PIN_LED_DATA = 14;   // SK6812 chain data-in
 constexpr uint8_t PIN_ENC_A    = 21;
@@ -30,9 +35,9 @@ constexpr uint8_t PIN_JOY_SW   = 17;
 // ESP32-S3-DevKitC-1. Avoids strapping pins (0, 3, 45, 46) and the pins
 // used by octal PSRAM on the N8R8 variant (35, 36, 37).
 constexpr uint8_t KEY_PINS[NUM_KEYS] = {
-    4, 5, 6, 7, 15,       // top row (K0-K4)
-    16, 17, 18, 21, 38,   // middle row (K5-K9)
-    39, 40, 41            // bottom row (K10-K12)
+    4, 5, 6, 7, 15,       // K0-K1 top band, K2-K4 agent row
+    16, 17, 18, 21, 38,   // K5 agent row, K6-K9 command row
+    39, 40, 41            // K10-K12 bottom row (K11 = talk bar)
 };
 constexpr uint8_t PIN_LED_DATA = 47;   // SK6812 chain data-in
 constexpr uint8_t PIN_ENC_A    = 1;

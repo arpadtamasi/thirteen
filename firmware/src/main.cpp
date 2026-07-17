@@ -38,6 +38,7 @@ static void sendHello() {
     doc["fw"] = THIRTEEN_FW_VERSION;
     doc["proto"] = PROTO_VERSION;
     doc["keys"] = NUM_KEYS;
+    doc["edge"] = NUM_EDGE_LEDS;
     sendJson(doc);
 }
 
@@ -114,7 +115,7 @@ static void handleLine(char* line) {
         if (strcmp(m, "pulse") == 0) mode = LedMode::Pulse;
         else if (strcmp(m, "blink") == 0) mode = LedMode::Blink;
         else if (strcmp(m, "off") == 0) mode = LedMode::Off;
-        if (key >= NUM_KEYS) {
+        if (key >= NUM_LEDS || key < -2) {
             sendAck("led", "key out of range");
         } else {
             ledsSet(key, rgb, mode);

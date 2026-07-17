@@ -7,18 +7,18 @@
 // (The RGBW variant exists — if yours is RGBW, switch the chipset to SK6812
 // in the FastLED.addLeds call and handle the W channel.)
 
-static CRGB leds[NUM_KEYS];
-static uint32_t baseColor[NUM_KEYS];
-static LedMode mode[NUM_KEYS];
+static CRGB leds[NUM_LEDS];
+static uint32_t baseColor[NUM_LEDS];
+static LedMode mode[NUM_LEDS];
 
 static constexpr uint8_t FRAME_MS = 16;       // ~60 fps
 static constexpr uint16_t PULSE_PERIOD = 2000; // ms per breathe cycle
 static constexpr uint16_t BLINK_PERIOD = 500;  // ms per on/off half-cycle
 
 void ledsInit() {
-    FastLED.addLeds<WS2812B, PIN_LED_DATA, GRB>(leds, NUM_KEYS);
+    FastLED.addLeds<WS2812B, PIN_LED_DATA, GRB>(leds, NUM_LEDS);
     FastLED.setBrightness(96);  // SK6812 mini-e at full white pulls ~10mA/ch
-    for (uint8_t i = 0; i < NUM_KEYS; i++) {
+    for (uint8_t i = 0; i < NUM_LEDS; i++) {
         baseColor[i] = 0;
         mode[i] = LedMode::Off;
     }
@@ -26,12 +26,17 @@ void ledsInit() {
 }
 
 void ledsSet(int key, uint32_t rgb, LedMode m) {
-    if (key < 0) {
-        for (uint8_t i = 0; i < NUM_KEYS; i++) {
+    if (key == -2) {  // edge ring
+        for (uint8_t i = NUM_KEYS; i < NUM_LEDS; i++) {
             baseColor[i] = rgb;
             mode[i] = m;
         }
-    } else if (key < NUM_KEYS) {
+    } else if (key < 0) {  // everything
+        for (uint8_t i = 0; i < NUM_LEDS; i++) {
+            baseColor[i] = rgb;
+            mode[i] = m;
+        }
+    } else if (key < NUM_LEDS) {
         baseColor[key] = rgb;
         mode[key] = m;
     }
@@ -43,7 +48,7 @@ void ledsTick() {
     if (now - lastFrame < FRAME_MS) return;
     lastFrame = now;
 
-    for (uint8_t i = 0; i < NUM_KEYS; i++) {
+    for (uint8_t i = 0; i < NUM_LEDS; i++) {
         CRGB c = CRGB(baseColor[i]);
         switch (mode[i]) {
             case LedMode::Off:

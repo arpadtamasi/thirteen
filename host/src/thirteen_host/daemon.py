@@ -23,6 +23,10 @@ from .device import Device
 
 log = logging.getLogger("thirteen.daemon")
 
+# which state wins the edge ring when several agents are active
+STATE_PRIORITY = ("error", "waiting", "running", "thinking", "done", "idle")
+EDGE_RING = -2  # protocol: -2 targets the edge-glow LEDs as a group
+
 
 @dataclass
 class KeySlot:
@@ -71,6 +75,7 @@ class Daemon:
         slot.updated = time.monotonic()
         log.info("agent %s -> %s (key %d)", ev.agent_id, ev.state, key)
         await self._paint(key)
+        await self._paint_edge()
 
     def _claim_key(self, adapter: Adapter, agent_id: str) -> int | None:
         pool = adapter.key_pool
@@ -106,6 +111,19 @@ class Daemon:
         await self.device.set_led(-1, "#000000", "off")
         for key in self.slots:
             await self._paint(key)
+        await self._paint_edge()
+
+    async def _paint_edge(self) -> None:
+        """Edge ring shows the most attention-worthy state across agents."""
+        if not self.config.edge_enabled:
+            return
+        states = {slot.state for slot in self.slots.values() if slot.agent_id}
+        for state in STATE_PRIORITY:
+            if state in states:
+                style = self.config.style_for(state)
+                await self.device.set_led(EDGE_RING, style.color, style.mode)
+                return
+        await self.device.set_led(EDGE_RING, "#000000", "off")
 
     # ---- device events -> actions -------------------------------------------
 

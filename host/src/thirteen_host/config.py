@@ -50,6 +50,8 @@ class Config:
     # "enc.btn", "joy.up", "joy.down", "joy.left", "joy.right", "joy.press".
     bindings: dict[str, Binding] = field(default_factory=dict)
     adapters: dict[str, dict[str, Any]] = field(default_factory=dict)
+    # edge-glow ring: mirrors the highest-priority agent state
+    edge_enabled: bool = True
 
     def style_for(self, state: str) -> LedStyle:
         return self.colors.get(state, LedStyle())
@@ -94,4 +96,5 @@ def load_config(path: Path | None = None) -> Config:
             cfg.bindings[f"{prefix}.{name}"] = _parse_binding(raw_binding)
 
     cfg.adapters = raw.get("adapters", {})
+    cfg.edge_enabled = bool(raw.get("edge", {}).get("enabled", True))
     return cfg
