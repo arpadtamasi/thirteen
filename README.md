@@ -63,7 +63,8 @@ Two independent paths, by design:
 ## Quickstart
 
 **Have hardware?** Follow [docs/build-guide.md](docs/build-guide.md).
-**Building from scratch?** [hardware/BOM.md](hardware/BOM.md) (~€30),
+**Building from scratch?** [hardware/BOM.md](hardware/BOM.md) (~€30, with
+shop links and a copy-paste [agent shopping prompt](hardware/BOM.md#agent-shopping-prompt)),
 [hardware/WIRING.md](hardware/WIRING.md), printable case in
 [hardware/case/](hardware/case/).
 

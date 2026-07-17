@@ -30,3 +30,50 @@ caps, LEDs); any electronics distributor or marketplace for the rest.
 - **PSP-style joystick**: works, needs its own breakout and mounting tweak.
 - **ESP32-S3-DevKitC-1**: bigger, but has all pins and is the default
   firmware env. Case is sized for the SuperMini; adjust `mcu_*` parameters.
+
+## Where to buy
+
+Direct product pages (EU-friendly):
+
+- Kailh Choc v1 switches: [splitkb.com](https://splitkb.com/products/kailh-low-profile-choc-switches)
+- MBK Choc keycaps: [fkcaps.com](https://fkcaps.com/keycaps/mbk), [splitkb.com keycaps](https://splitkb.com/collections/switches-and-keycaps)
+- SK6812 MINI-E: [splitkb.com](https://splitkb.com/products/sk6812mini-e-rgb-leds), [keycapsss.com](https://keycapsss.com/keyboard-parts/parts/114/sk6812-mini-e-rgb-smd-led)
+- ESP32-S3 SuperMini, EC11, joystick module, inserts, screws, wire:
+  any electronics marketplace or distributor — search "ESP32-S3 SuperMini",
+  "EC11 rotary encoder", "KY-023 joystick", "M3 heat-set insert".
+
+## Agent shopping prompt
+
+Copy-paste this into any AI assistant with web browsing and let it fill
+your cart. The three classic ordering mistakes (Choc v2, RGBW LEDs, an
+ESP32-**C3** instead of S3) are guarded against in the item notes.
+
+```text
+Help me buy the parts for a DIY macropad
+(project: https://github.com/arpadtamasi/thirteen).
+I'm in the EU — prefer EU shops for the keyboard parts (splitkb.com,
+mykeyboard.eu, keycapsss.com); a marketplace like AliExpress is fine for
+the generic electronics. Target total: EUR 25-40. For each item find the
+exact product page, check stock, and give me the final cart list with
+prices and shipping.
+
+1. Kailh Choc v1 low-profile switches, LINEAR, ~35-50g — qty 13
+   (must be Choc v1 / PG1350, NOT Choc v2, NOT KS-33)
+2. MBK-profile Choc keycaps, blank, 1u — qty 13, any dark color + 1 accent
+   color if available (must be Choc v1 stem, NOT MX)
+3. SK6812 MINI-E RGB LEDs — qty 15 (13 + spares).
+   CRITICAL: the RGB version, NOT the RGBW variant, and MINI-E (with side
+   legs), not the plain MINI.
+4. ESP32-S3 SuperMini dev board — qty 1. Must be ESP32-S3 (not C3/C6/H2!),
+   USB-C, with native USB. Prefer a listing that shows the pinout diagram.
+5. EC11 rotary encoder with push button, 15-20mm shaft — qty 1, plus one
+   knurled aluminum knob for 6mm D-shaft
+6. Dual-axis analog thumb joystick module (KY-023 style, 2 pots + switch,
+   5-pin) — qty 1
+7. M3 heat-set threaded inserts, M3x5mm, OD ~4.5mm — qty 10 (need 6)
+8. M3x8mm socket head screws — qty 10
+9. 30 AWG silicone-insulated hookup wire, 3+ colors — 1 small spool set
+
+Flag anything where the listing is ambiguous about the variant (especially
+items 1, 3, 4) instead of guessing.
+```
