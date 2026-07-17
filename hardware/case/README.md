@@ -15,6 +15,18 @@ openscad -D 'part="shell"' -o thirteen_shell.stl thirteen_case.scad
 Or in the GUI: open `thirteen_case.scad`, pick the part in the Customizer,
 press F6 (render), then File → Export → STL.
 
+## Render a preview image
+
+`part="display"` is a non-printable assembled preview — keycaps, encoder
+knob, thumbstick and per-key LED glow in the daemon's default state
+colors. Render it in preview mode (no `--render`, so colors show):
+
+```sh
+openscad -D 'part="display"' --imgsize=1920,1440 \
+  --colorscheme='Tomorrow Night' --camera=51,46,8,45,0,318,240 \
+  -o thirteen.png thirteen_case.scad
+```
+
 ## Print settings
 
 - Plate: 0.2mm layers, 4+ perimeters, print flat, no supports. PETG or ABS

@@ -5,7 +5,10 @@
 // See README.md in this directory for exact commands.
 
 /* [What to render] */
-part = "plate"; // ["plate", "shell", "both"]
+// "display" is a non-printable assembled preview with keycaps, knob,
+// stick and LED glow — for renders only (use preview mode, F5/no --render,
+// so the colors show).
+part = "plate"; // ["plate", "shell", "both", "display"]
 
 /* [Layout] */
 // Choc spacing (MX: 19.05 x 19.05)
@@ -153,6 +156,81 @@ module shell() {
             }
 }
 
+// ---- display assembly (render-only, not printable) -----------------------------
+
+// per-key LED glow colors for the preview: the daemon's default state
+// palette. "" = LED off.
+glow_colors = [
+    "#8A2BE2", "#8A2BE2", "#00A0FF", "#FFB000", "",   // top row
+    "#00C853", "#8A2BE2", "", "", "",                  // middle row
+    "", "", ""                                         // bottom row
+];
+
+case_color = [0.13, 0.13, 0.14];
+cap_color  = [0.17, 0.17, 0.18];
+
+module rounded_sq(w, h, r) {
+    offset(r = r) offset(r = -r) square([w, h], center = true);
+}
+
+// MBK-ish Choc keycap: 17.2x16.2 footprint tapering to a smaller top
+module keycap() {
+    hull() {
+        linear_extrude(0.01) rounded_sq(16.9, 15.9, 2);
+        translate([0, 0, 3.2])
+            linear_extrude(0.01) rounded_sq(14.5, 13.5, 3);
+    }
+}
+
+// knurled aluminum encoder knob
+module knob() {
+    color([0.72, 0.73, 0.76]) {
+        cylinder(d = 13, h = 9);
+        for (i = [0 : 23])
+            rotate([0, 0, i * 15])
+                translate([6.5, 0, 0.8]) cube([0.5, 0.8, 7.5], center = true);
+    }
+}
+
+// thumbstick: shaft + flat rubber cap
+module stick() {
+    color([0.10, 0.10, 0.11]) {
+        cylinder(d = 9, h = 7);
+        translate([0, 0, 7]) cylinder(d = 20, h = 3.5);
+        translate([0, 0, 10.5])
+            cylinder(d1 = 20, d2 = 16, h = 1.2);
+    }
+}
+
+module display_assembly() {
+    top_z = floor_thickness + shell_inner_height;  // plate rests here
+
+    color(case_color) shell();
+    color(case_color) translate([0, 0, top_z]) plate();
+
+    // keycaps + LED glow, keyed to glow_colors by index
+    for (r = [0 : rows - 1])
+        for (c = [0 : row_keys[r] - 1]) {
+            i = (r == 0) ? c : (r == 1) ? 5 + c : 10 + c;
+            x = origin_x + row_offset_x(r) + c * key_pitch_x;
+            y = origin_y - r * key_pitch_y;
+            translate([x, y, top_z + plate_thickness + 1.8])
+                color(cap_color) keycap();
+            if (glow_colors[i] != "")
+                color(glow_colors[i], 0.9)
+                    translate([x, y, top_z + plate_thickness])
+                        linear_extrude(1.6) rounded_sq(18.6, 17.6, 2);
+        }
+
+    translate([enc_cx, ctrl_cy, top_z + plate_thickness]) knob();
+    translate([joy_cx, ctrl_cy, top_z + plate_thickness - 2]) stick();
+
+    // white USB-C cable stub out the top edge
+    color([0.92, 0.92, 0.92])
+        translate([plate_w / 2, plate_h - 1, floor_thickness + usb_z])
+            rotate([-90, 0, 0]) cylinder(d = 3.6, h = 18);
+}
+
 // ---- output -----------------------------------------------------------------------
 
 if (part == "plate") plate();
@@ -161,3 +239,4 @@ if (part == "both") {
     shell();
     translate([0, 0, floor_thickness + shell_inner_height + 8]) plate();
 }
+if (part == "display") display_assembly();

@@ -8,10 +8,12 @@ rotary encoder, a joystick, and per-key RGB that shows what your AI agents
 are doing right now — thinking, running, waiting for you, done. Press a key
 to approve. Flick the stick to steer.
 
-![the actual case geometry, rendered from hardware/case/thirteen_case.scad](docs/images/case-render.png)
+![assembled thirteen, rendered from hardware/case/thirteen_case.scad](docs/images/cad-assembled.png)
 
-*Rendered straight from the OpenSCAD source in this repo — no photo yet;
-the first physical build is pending. (An AI concept render lives in
+*CAD render, straight from the OpenSCAD source in this repo
+(`part="display"`) — key LEDs shown in the daemon's default state colors:
+violet = thinking, blue = running, amber = waiting, green = done. No photo
+yet; the first physical build is pending. (An AI concept render lives in
 [docs/images/hero.jpg](docs/images/hero.jpg) if you prefer the dream version.)*
 
 ## Why
