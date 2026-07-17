@@ -71,8 +71,6 @@ enabled = true
 # key 11 is the wide talk bar — bind your dictation hotkey at the OS
 # level (it types F24 by default), or trigger it here:
 # 11 = { type = "shell", command = "your-dictation-toggle" }
-# example: pop up a terminal on key 11
-# 11 = { type = "shell", command = "x-terminal-emulator" }
 
 [enc]
 # encoder already does volume via HID; bind cw/ccw/btn here to override
