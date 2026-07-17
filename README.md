@@ -8,7 +8,11 @@ rotary encoder, a joystick, and per-key RGB that shows what your AI agents
 are doing right now — thinking, running, waiting for you, done. Press a key
 to approve. Flick the stick to steer.
 
-![photo placeholder — assembled thirteen, six keys glowing](docs/images/hero.jpg)
+![the actual case geometry, rendered from hardware/case/thirteen_case.scad](docs/images/case-render.png)
+
+*Rendered straight from the OpenSCAD source in this repo — no photo yet;
+the first physical build is pending. (An AI concept render lives in
+[docs/images/hero.jpg](docs/images/hero.jpg) if you prefer the dream version.)*
 
 ## Why
 
