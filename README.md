@@ -89,7 +89,8 @@ echo '{"agent_id":"hi","state":"waiting"}' | thirteen-host
 ```
 
 Claude Code integration is a five-line hooks snippet:
-[docs/adapter-guide.md](docs/adapter-guide.md).
+[docs/adapter-guide.md](docs/adapter-guide.md). Key bindings, the voice
+talk bar, and daily workflow: [docs/user-guide.md](docs/user-guide.md).
 
 ## Adapters
 
@@ -107,7 +108,7 @@ firmware/   ESP32-S3 PlatformIO project (USB HID + CDC, LittleFS keymap)
 protocol/   PROTOCOL.md — the NDJSON serial contract, versioned
 host/       thirteen-host Python daemon + adapters
 hardware/   BOM, wiring, parametric OpenSCAD case
-docs/       build guide, adapter authoring guide
+docs/       build guide, user guide (bindings + voice), adapter guide
 ```
 
 ## Contributing

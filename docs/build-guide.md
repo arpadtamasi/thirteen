@@ -89,6 +89,9 @@ Sanity checks, in escalating order of satisfaction:
    watch its key pulse violet while it thinks, blink amber when it wants
    approval, go green when done.
 
+Then set up your key bindings and the voice talk bar:
+[user-guide.md](user-guide.md).
+
 ## 5. Remapping keys
 
 No reflash needed — the keymap lives on the device's flash filesystem and
