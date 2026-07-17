@@ -13,10 +13,10 @@ or put a single 1N4148 in series with the 5V feed to drop it.
 
 | signal | GPIO | notes |
 |--------|------|-------|
-| K0–K4 (top row) | 4, 5, 6, 7, 15 | switch → GPIO, other leg → GND |
-| K5–K9 (middle row) | 16, 17, 18, 21, 38 | |
-| K10–K12 (bottom row) | 39, 40, 41 | |
-| LED data | 47 | → DIN of first SK6812; chain DOUT→DIN |
+| K0–K1 (top band) + K2–K4 | 4, 5, 6, 7, 15 | switch → GPIO, other leg → GND |
+| K5 + K6–K9 (command row) | 16, 17, 18, 21, 38 | |
+| K10–K12 (bottom row, K11 = talk bar) | 39, 40, 41 | |
+| LED data | 47 | → DIN of first SK6812; chain: 13 key LEDs, then 6 edge LEDs |
 | Encoder A | 1 | EC11 A |
 | Encoder B | 2 | EC11 B |
 | Encoder push | 42 | EC11 switch pins |
@@ -73,6 +73,15 @@ if needed.
   LED chain:      5V ──┬── all SK6812 VDD
                   GND ─┴── all SK6812 GND    data daisy-chained K0→K12
 ```
+
+## LED chain order
+
+19 LEDs on one chain: key LEDs K0→K12 first (indexes 0–12), then the six
+edge-glow LEDs (indexes 13–18) mounted face-down or face-out around the
+shell perimeter, shining into the translucent bottom rim. Print the shell
+(or just its bottom band) in translucent filament to get the diffused
+edge glow; skip the 6 LEDs entirely and the pad still works — the ring
+just stays dark.
 
 ## Soldering order
 

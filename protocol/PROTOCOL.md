@@ -36,7 +36,7 @@ Device replies with `pong`.
 
 | field   | type   | notes                                              |
 |---------|--------|----------------------------------------------------|
-| `key`   | int    | 0–12, or `-1` for all keys                          |
+| `key`   | int    | 0–12 = key LEDs, 13–18 = edge-glow segments, `-1` = every LED, `-2` = the edge ring as a group |
 | `color` | string | `#RRGGBB` hex                                       |
 | `mode`  | string | `"solid"`, `"pulse"` (slow breathe), `"blink"` (hard on/off), `"off"` |
 
@@ -66,8 +66,11 @@ Device replies with `{"v": 1, "t": "keymap", "map": {...}}`.
 ### `hello` — sent once on boot / USB reconnect
 
 ```json
-{"v": 1, "t": "hello", "fw": "0.1.0", "proto": 1, "keys": 13}
+{"v": 1, "t": "hello", "fw": "0.1.0", "proto": 1, "keys": 13, "edge": 6}
 ```
+
+`edge` is the number of edge-glow LEDs after the key LEDs on the chain
+(0 if the build has none).
 
 ### `key` — key press / release
 

@@ -31,7 +31,9 @@ mode = "blink"
 
 # ---------------------------------------------------------------------------
 # Adapters. Each gets a pool of keys whose LEDs show its agents' status.
-# Key indices: 0-4 top row, 5-9 middle row, 10-12 bottom row.
+# Key indices: 0-1 top band (between knob and joystick), 2-5 agent row,
+# 6-9 command row, 10-12 bottom row (11 = the wide talk bar).
+# Keys 0-5 are the six "agent keys".
 
 [adapters.claude_code]
 keys = [0, 1, 2, 3, 4, 5]
@@ -56,10 +58,19 @@ keys = [9, 10, 11, 12]
 #   adapter — call an adapter action:   { type = "adapter", adapter = "claude_code", action = "clear" }
 #   led     — set an LED directly:      { type = "led", key = 12, color = "#FF00FF", mode = "solid" }
 
+# The edge-glow ring mirrors the highest-priority agent state
+# (error > waiting > running > thinking > done). Disable it here if your
+# build has no edge LEDs or you find it distracting.
+[edge]
+enabled = true
+
 [keys]
 # key 12 (bottom-right, mapped to "none" in the device keymap) clears
 # finished sessions:
 12 = { type = "adapter", adapter = "claude_code", action = "clear" }
+# key 11 is the wide talk bar — bind your dictation hotkey at the OS
+# level (it types F24 by default), or trigger it here:
+# 11 = { type = "shell", command = "your-dictation-toggle" }
 # example: pop up a terminal on key 11
 # 11 = { type = "shell", command = "x-terminal-emulator" }
 

@@ -12,8 +12,9 @@ to approve. Flick the stick to steer.
 
 *CAD render, straight from the OpenSCAD source in this repo
 (`part="display"`) — key LEDs shown in the daemon's default state colors:
-violet = thinking, blue = running, amber = waiting, green = done. No photo
-yet; the first physical build is pending. (An AI concept render lives in
+violet = thinking, blue = running, amber = waiting, green = done; the
+edge ring glows with whichever agent needs attention most. No photo yet;
+the first physical build is pending. (An AI concept render lives in
 [docs/images/hero.jpg](docs/images/hero.jpg) if you prefer the dream version.)*
 
 ## Why
@@ -46,7 +47,7 @@ swappable adapters — Claude Code today, anything tomorrow, no reflash.
 │ Claude Code├───────▶│                      │ over serial │   thirteen   │
 └────────────┘        │    thirteen-host     │   115200 8N1 │  (ESP32-S3)  │
 ┌────────────┐ NDJSON │                      │             │              │
-│ anything   ├───────▶│  adapters ──┐        │──── LEDs ──▶│ 13× SK6812   │
+│ anything   ├───────▶│  adapters ──┐        │──── LEDs ──▶│ 19× SK6812   │
 │ (stdin)    │        │  claude_code│ daemon │             │ 13× Choc     │
 └────────────┘        │  generic_st…│  ────  │◀── events ──│ EC11 encoder │
 ┌────────────┐        │  demo      ─┘        │             │ 2-axis stick │

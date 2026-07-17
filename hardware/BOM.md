@@ -8,7 +8,7 @@ eighth of a Codex Micro, plus you own the firmware.
 | 1 | ESP32-S3 SuperMini | 1 | €5–8 | The tiny (~22×18mm) S3 board. Any ESP32-S3 board with native USB works; the DevKitC-1 is the firmware's default env. |
 | 2 | Kailh Choc v1 switch | 13 | €6–9 | Low-profile, hot-swappable feel without a hotswap socket if you solder direct. Pick your weight; linear "Red Pro" (35g) suits rapid approvals. |
 | 3 | Choc keycaps (MBK or similar) | 13 | €5–8 | Or 3D-print them. One contrasting cap for the "approve" key is worth it. |
-| 4 | SK6812 MINI-E RGB LED | 13 | €2–4 | The MINI-E's legs stick out sideways — hand-solderable under each switch. Buy a few spares; they don't love hot-air rework. |
+| 4 | SK6812 MINI-E RGB LED | 19 | €3–5 | 13 under the keys + 6 for the edge-glow ring. The MINI-E's legs stick out sideways — hand-solderable. Buy spares; they don't love hot-air rework. |
 | 5 | EC11 rotary encoder (with push) | 1 | €1–2 | 15mm shaft + a knob you like. |
 | 6 | 2-axis analog joystick module | 1 | €1–3 | KY-023-style thumbstick module with X/Y pots and a push switch. |
 | 7 | M3 heat-set inserts | 4–6 | €1 | For the case; M3×5×4 short type. |
@@ -61,7 +61,7 @@ prices and shipping.
    (must be Choc v1 / PG1350, NOT Choc v2, NOT KS-33)
 2. MBK-profile Choc keycaps, blank, 1u — qty 13, any dark color + 1 accent
    color if available (must be Choc v1 stem, NOT MX)
-3. SK6812 MINI-E RGB LEDs — qty 15 (13 + spares).
+3. SK6812 MINI-E RGB LEDs — qty 25 (19 + spares).
    CRITICAL: the RGB version, NOT the RGBW variant, and MINI-E (with side
    legs), not the plain MINI.
 4. ESP32-S3 SuperMini dev board — qty 1. Must be ESP32-S3 (not C3/C6/H2!),
