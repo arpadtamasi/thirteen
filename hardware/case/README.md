@@ -17,15 +17,20 @@ press F6 (render), then File → Export → STL.
 
 ## Render a preview image
 
-`part="display"` is a non-printable assembled preview — keycaps, encoder
-knob, thumbstick and per-key LED glow in the daemon's default state
-colors. Render it in preview mode (no `--render`, so colors show):
+`part="display"` is a non-printable assembled preview — keycaps with
+legend icons (session dots 1-5, approve / reject / run / pause / stop,
+prev / next / clear), encoder knob, thumbstick and per-key LED glow in
+the daemon's default state colors. Render it in preview mode (no
+`--render`, so colors show):
 
 ```sh
 openscad -D 'part="display"' --imgsize=1920,1440 \
   --colorscheme='Tomorrow Night' --camera=51,46,8,45,0,318,240 \
   -o thirteen.png thirteen_case.scad
 ```
+
+Options: `-D 'display_style="white"'` for the white colorway,
+`-D show_icons=false` for blank caps.
 
 ## Print settings
 

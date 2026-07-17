@@ -158,6 +158,10 @@ module shell() {
 
 // ---- display assembly (render-only, not printable) -----------------------------
 
+/* [Display options] */
+display_style = "black"; // ["black", "white"]
+show_icons = true;
+
 // per-key LED glow colors for the preview: the daemon's default state
 // palette. "" = LED off.
 glow_colors = [
@@ -166,8 +170,15 @@ glow_colors = [
     "", "", ""                                         // bottom row
 ];
 
-case_color = [0.13, 0.13, 0.14];
-cap_color  = [0.17, 0.17, 0.18];
+case_color = display_style == "white" ? [0.90, 0.90, 0.91] : [0.13, 0.13, 0.14];
+cap_color  = display_style == "white" ? [0.96, 0.96, 0.97] : [0.17, 0.17, 0.18];
+icon_color = display_style == "white" ? [0.30, 0.30, 0.34] : [0.80, 0.80, 0.84];
+
+// keycap legends, top row to bottom: session slots 1-5, then
+// approve / reject / run / pause / stop, then prev / next / clear
+icon_ids = ["d1", "d2", "d3", "d4", "d5",
+            "chk", "x", "play", "pause", "stop",
+            "left", "right", "ring"];
 
 module rounded_sq(w, h, r) {
     offset(r = r) offset(r = -r) square([w, h], center = true);
@@ -202,6 +213,52 @@ module stick() {
     }
 }
 
+// ---- keycap icons (2D, built from primitives — no font dependency) ---------
+
+module seg(a, b, w) {
+    hull() {
+        translate(a) circle(d = w);
+        translate(b) circle(d = w);
+    }
+}
+
+module dots(n) {
+    p = n == 1 ? [[0, 0]]
+      : n == 2 ? [[-1.8, 0], [1.8, 0]]
+      : n == 3 ? [[-2.4, 0], [0, 0], [2.4, 0]]
+      : n == 4 ? [[-1.8, -1.8], [1.8, -1.8], [-1.8, 1.8], [1.8, 1.8]]
+      :          [[-2, -2], [2, -2], [0, 0], [-2, 2], [2, 2]];
+    for (q = p) translate(q) circle(d = 1.7);
+}
+
+module icon(id) {
+    if (id == "d1") dots(1);
+    if (id == "d2") dots(2);
+    if (id == "d3") dots(3);
+    if (id == "d4") dots(4);
+    if (id == "d5") dots(5);
+    if (id == "chk") {
+        seg([-2.8, 0.2], [-0.9, -1.8], 1.5);
+        seg([-0.9, -1.8], [2.9, 2.4], 1.5);
+    }
+    if (id == "x") {
+        seg([-2.2, -2.2], [2.2, 2.2], 1.5);
+        seg([-2.2, 2.2], [2.2, -2.2], 1.5);
+    }
+    if (id == "play") polygon([[-2, -2.8], [-2, 2.8], [3, 0]]);
+    if (id == "pause") {
+        translate([-1.5, 0]) square([1.7, 5.6], center = true);
+        translate([1.5, 0]) square([1.7, 5.6], center = true);
+    }
+    if (id == "stop") square([4.8, 4.8], center = true);
+    if (id == "left") polygon([[2, -2.8], [2, 2.8], [-3, 0]]);
+    if (id == "right") polygon([[-2, -2.8], [-2, 2.8], [3, 0]]);
+    if (id == "ring") difference() {
+        circle(d = 6);
+        circle(d = 3.2);
+    }
+}
+
 module display_assembly() {
     top_z = floor_thickness + shell_inner_height;  // plate rests here
 
@@ -216,6 +273,10 @@ module display_assembly() {
             y = origin_y - r * key_pitch_y;
             translate([x, y, top_z + plate_thickness + 1.8])
                 color(cap_color) keycap();
+            if (show_icons)
+                color(icon_color)
+                    translate([x, y, top_z + plate_thickness + 1.8 + 3.2])
+                        linear_extrude(0.4) icon(icon_ids[i]);
             if (glow_colors[i] != "")
                 color(glow_colors[i], 0.9)
                     translate([x, y, top_z + plate_thickness])
