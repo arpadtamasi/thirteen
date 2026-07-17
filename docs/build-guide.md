@@ -16,7 +16,7 @@ pio device monitor
 You should see the `hello` line:
 
 ```json
-{"t":"hello","fw":"0.1.0","proto":1,"keys":13,"v":1}
+{"t":"hello","fw":"0.1.0","proto":1,"keys":13,"edge":6,"v":1}
 ```
 
 Short any key GPIO (see `hardware/WIRING.md`) to GND with a jumper — a
@@ -38,7 +38,10 @@ The LEDs live under the switches, so the order matters:
 
 1. **LED chain first.** Place the 13 SK6812 MINI-E under each key position
    (legs sideways, hand-solderable). Chain them K0→K12: DOUT of each to DIN
-   of the next. Common 5V and GND rails along the rows.
+   of the next, then continue the chain into the 6 edge-glow LEDs around
+   the shell perimeter (indexes 13-18; skip them if you don't want the
+   glowing rim — everything else still works). Common 5V and GND rails
+   along the rows.
    Check the chain NOW — power the board and run:
 
    ```sh
@@ -46,14 +49,15 @@ The LEDs live under the switches, so the order matters:
    ```
 
    (Windows: use the host daemon or a serial terminal on COM3 instead.)
-   All 13 LEDs should light. A dead LED mid-chain kills everything after
+   All 19 LEDs should light. A dead LED mid-chain kills everything after
    it — fix now, not after the switches are in.
 
 2. **Switches into the plate**, then one leg of each switch to its GPIO
    (30 AWG), the other legs daisy-chained to GND. No diodes — every key has
    its own pin.
 
-3. **Encoder and joystick** into the bottom band; A/B/SW and X/Y/SW wires
+3. **Encoder and joystick** into the top band (knob left, stick right);
+   A/B/SW and X/Y/SW wires
    per the wiring table. Power the joystick from **3.3V** (its pots feed
    ADC pins that are not 5V-tolerant).
 

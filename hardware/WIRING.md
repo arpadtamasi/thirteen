@@ -50,7 +50,7 @@ if needed.
    USB-C ═══════▶│ USB D+/D-     │
                  │               │
   K0 ─┬─ GPIO4   │               │   GPIO47 ──▶ DIN ┌──────┐DOUT
-  K1 ─┼─ GPIO5   │               │                  │SK6812│──▶ ...13 LEDs,
+  K1 ─┼─ GPIO5   │               │                  │SK6812│──▶ ...19 LEDs,
   ... ┼          │  13 direct    │                  │ #0   │    one under
  K12 ─┴─ GPIO41  │  GPIOs, all   │                  └──────┘    each key
    │             │  INPUT_PULLUP │                   5V│ │GND
@@ -71,8 +71,16 @@ if needed.
   Switch wiring:  GPIO ──[switch]── GND      (no diode needed: one pin
                                               per key, nothing to ghost)
   LED chain:      5V ──┬── all SK6812 VDD
-                  GND ─┴── all SK6812 GND    data daisy-chained K0→K12
+                  GND ─┴── all SK6812 GND    data chained K0→K12,
+                                              then 6 edge LEDs
 ```
+
+## Joystick module footprint
+
+TODO(hw-test): a KY-023 breakout board (~26×34mm) is larger than the
+top-right corner it mounts under. Options: rotate the board diagonally,
+trim its corners, or desolder the stick and mount it bare on perfboard.
+The plate opening only cares about the stick itself (24mm clearance).
 
 ## LED chain order
 
